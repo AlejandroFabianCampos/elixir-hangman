@@ -102,4 +102,12 @@ defmodule GameTest do
       end
     )
   end
+
+  test "invalid guesses aren't allowed" do
+    game = Game.new_game("wibble")
+    game = Game.make_move(game, "F")
+    assert game.game_state == :invalid_guess
+    game = Game.make_move(game, "1")
+    assert game.game_state == :invalid_guess
+  end
 end
