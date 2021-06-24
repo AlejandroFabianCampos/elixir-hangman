@@ -12,7 +12,7 @@ defmodule TextClient.Prompter do
   end
 
   defp check_input(:eof, _) do
-    IO.puts("Don't gave up so easily!")
+    IO.puts("Don't give up so easily!")
     exit(:normal)
   end
 
