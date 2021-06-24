@@ -62,7 +62,7 @@ defmodule GameTest do
     Enum.reduce(
       moves,
       game,
-      fn _move = {guess, expected_state}, game ->
+      fn ({guess, expected_state}, game) ->
         { game, _tally } = Game.make_move(game, guess)
         assert game.game_state == expected_state
         assert game.turns_left == 7
@@ -94,7 +94,7 @@ defmodule GameTest do
     Enum.reduce(
       moves,
       game,
-      fn _move = {guess, expected_state, expected_turns_left}, game ->
+      fn ({guess, expected_state, expected_turns_left}, game) ->
         { game, _tally } = Game.make_move(game, guess)
         assert game.game_state == expected_state
         assert game.turns_left == expected_turns_left
