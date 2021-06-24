@@ -15,4 +15,27 @@ defmodule GameTest do
 
     Enum.each(game.letters, fn letter -> assert letter =~ ~r/[a-z]/ end)
   end
+
+  test "state isn't changed for :won or :lost game" do
+    for state <- [:won, :lost] do
+      game = Game.new_game() |> Map.put(:game_state, state)
+      assert {^game, _} = Game.make_move(game, "x")
+    end
+  end
+
+  test "first occurence of letter is not already used" do
+    game = Game.new_game()
+    { game, _tally } = Game.make_move(game, "x")
+    assert game.game_state != :already_used
+  end
+
+  test "used letter isn't allowed a second time" do
+    test_letter = "x"
+    game = Game.new_game()
+    {game, _tally } = Game.make_move(game, test_letter)
+    assert game.game_state != :already_used
+    assert test_letter in game.used
+    {game, _tally } = Game.make_move(game, test_letter)
+    assert game.game_state == :already_used
+  end
 end
