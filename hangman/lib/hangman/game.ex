@@ -23,6 +23,16 @@ defmodule Hangman.Game do
     accept_move(game, guess, MapSet.member?(game.used, guess), invalid_guess(guess))
   end
 
+  def tally(game = %Hangman.Game{game_state: state}) when state in [:won, :lost] do
+    %{
+      game_state: game.game_state,
+      turns_left: game.turns_left,
+      letters: game.letters |> reveal_guessed(game.used),
+      used: game.used,
+      full_word: game.letters |> List.to_string()
+    }
+  end
+
   def tally(game) do
     %{
       game_state: game.game_state,
