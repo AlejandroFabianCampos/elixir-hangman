@@ -46,22 +46,60 @@ defmodule GameTest do
     assert game.turns_left == 7
   end
 
+
+
   test "a guessed word is a won game" do
+    moves = [
+      {"w", :good_guess},
+      {"i", :good_guess},
+      {"b", :good_guess},
+      {"l", :good_guess},
+      {"e", :won}
+    ]
+
     game = Game.new_game("wibble")
-    {game, _tally} = Game.make_move(game, "w")
-    assert game.game_state == :good_guess
-    assert game.turns_left == 7
-    {game, _tally} = Game.make_move(game, "i")
-    assert game.game_state == :good_guess
-    assert game.turns_left == 7
-    {game, _tally} = Game.make_move(game, "b")
-    assert game.game_state == :good_guess
-    assert game.turns_left == 7
-    {game, _tally} = Game.make_move(game, "l")
-    assert game.game_state == :good_guess
-    assert game.turns_left == 7
-    {game, _tally} = Game.make_move(game, "e")
-    assert game.game_state == :won
-    assert game.turns_left == 7
+
+    Enum.reduce(
+      moves,
+      game,
+      fn _move = {guess, expected_state}, game ->
+        { game, _tally } = Game.make_move(game, guess)
+        assert game.game_state == expected_state
+        assert game.turns_left == 7
+        game
+      end
+    )
+  end
+
+  test "bad guess is recognized" do
+    game = Game.new_game("wibble")
+    { game, _tally} = Game.make_move(game, "f")
+    assert game.turns_left == 6
+    assert game.game_state == :bad_guess
+  end
+
+  test "new lost game" do
+    moves = [
+      {"a", :bad_guess, 6},
+      {"b", :bad_guess, 5},
+      {"c", :bad_guess, 4},
+      {"d", :bad_guess, 3},
+      {"e", :bad_guess, 2},
+      {"f", :bad_guess, 1},
+      {"g", :lost, 1},
+    ]
+
+    game = Game.new_game("w")
+
+    Enum.reduce(
+      moves,
+      game,
+      fn _move = {guess, expected_state, expected_turns_left}, game ->
+        { game, _tally } = Game.make_move(game, guess)
+        assert game.game_state == expected_state
+        assert game.turns_left == expected_turns_left
+        game
+      end
+    )
   end
 end
