@@ -1,20 +1,12 @@
 defmodule Dictionary do
-  @spec word_list :: [binary]
-  def word_list do
-    "../assets/words.txt"
-    |> Path.expand(__DIR__)
-    |> File.read!()
-    |> String.split(~r/\n/)
-  end
+  alias Dictionary.WordList
 
-  @spec random_word :: binary
-  def random_word do
-    word_list()
-    |> Enum.random()
-  end
+  defdelegate start(), to: WordList, as: :word_list
+  defdelegate random_word(custom_word_list), to: WordList
+  defdelegate filtered_word_list(length_of_word), to: WordList
 
-  def filtered_word_list(length_of_word) do
-    word_list()
-    |> Enum.filter(fn string -> String.length(string) == length_of_word end)
-  end
+  # ==== Deprecated ====
+  defdelegate word_list(), to: WordList
+  defdelegate random_word(), to: WordList
+
 end
