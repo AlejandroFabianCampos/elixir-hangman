@@ -12,4 +12,9 @@ defmodule Dictionary do
     word_list()
     |> Enum.random()
   end
+
+  def filtered_word_list(length_of_word) do
+    word_list()
+    |> Enum.filter(fn string -> String.length(string) == length_of_word end)
+  end
 end
