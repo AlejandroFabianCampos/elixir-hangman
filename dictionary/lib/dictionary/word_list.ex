@@ -1,4 +1,9 @@
 defmodule Dictionary.WordList do
+
+  def start_link() do
+    Agent.start_link(&word_list/0)
+  end
+
   @spec word_list :: [binary]
   def word_list do
     "../../assets/words.txt"
@@ -7,16 +12,14 @@ defmodule Dictionary.WordList do
     |> String.split(~r/\n/)
   end
 
-  def random_word(custom_word_list) do
-    custom_word_list
-    |> Enum.random()
+  def random_word(agent) do
+    Agent.get(agent, &Enum.random/1)
   end
 
   def filtered_word_list(length_of_word) do
     word_list()
     |> Enum.filter(fn string -> String.length(string) == length_of_word end)
   end
-
 
   # ===== Deprecated =====
   @spec random_word :: binary
