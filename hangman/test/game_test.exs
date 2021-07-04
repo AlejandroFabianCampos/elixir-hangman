@@ -19,29 +19,29 @@ defmodule GameTest do
   test "state isn't changed for :won or :lost game" do
     for state <- [:won, :lost] do
       game = Game.new_game() |> Map.put(:game_state, state)
-      assert ^game = Game.make_move(game, "x")
+      assert { ^game, _ } = Game.make_move(game, "x")
     end
   end
 
   test "first occurence of letter is not already used" do
     game = Game.new_game()
-    game = Game.make_move(game, "x")
+    { game, _ } = Game.make_move(game, "x")
     assert game.game_state != :already_used
   end
 
   test "used letter isn't allowed a second time" do
     test_letter = "x"
     game = Game.new_game()
-    game = Game.make_move(game, test_letter)
+    { game, _ } = Game.make_move(game, test_letter)
     assert game.game_state != :already_used
     assert test_letter in game.used
-    game = Game.make_move(game, test_letter)
+    { game, _ } = Game.make_move(game, test_letter)
     assert game.game_state == :already_used
   end
 
   test "a good guess is recognized" do
     game = Game.new_game("wibble")
-    game = Game.make_move(game, "w")
+    { game, _ } = Game.make_move(game, "w")
     assert game.game_state == :good_guess
     assert game.turns_left == 7
   end
@@ -63,7 +63,7 @@ defmodule GameTest do
       moves,
       game,
       fn ({guess, expected_state}, game) ->
-        game = Game.make_move(game, guess)
+        { game, _ } = Game.make_move(game, guess)
         assert game.game_state == expected_state
         assert game.turns_left == 7
         game
@@ -73,7 +73,7 @@ defmodule GameTest do
 
   test "bad guess is recognized" do
     game = Game.new_game("wibble")
-    game = Game.make_move(game, "f")
+    { game, _ } = Game.make_move(game, "f")
     assert game.turns_left == 6
     assert game.game_state == :bad_guess
   end
@@ -95,7 +95,7 @@ defmodule GameTest do
       moves,
       game,
       fn ({guess, expected_state, expected_turns_left}, game) ->
-        game = Game.make_move(game, guess)
+        { game, _ } = Game.make_move(game, guess)
         assert game.game_state == expected_state
         assert game.turns_left == expected_turns_left
         game
@@ -105,9 +105,9 @@ defmodule GameTest do
 
   test "invalid guesses aren't allowed" do
     game = Game.new_game("wibble")
-    game = Game.make_move(game, "F")
+    { game, _ } = Game.make_move(game, "F")
     assert game.game_state == :invalid_guess
-    game = Game.make_move(game, "1")
+    { game, _ } = Game.make_move(game, "1")
     assert game.game_state == :invalid_guess
   end
 end
