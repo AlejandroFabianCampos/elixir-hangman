@@ -10,6 +10,9 @@ import "../css/app.scss"
 // Import deps with the dep name or local files with a relative path, for example:
 //
 import {Socket} from "phoenix"
-import socket from "./socket"
+import HangmanSocket from "./socket"
 //
 import "phoenix_html"
+
+const socket = new HangmanSocket()
+socket.connect_to_hangman()

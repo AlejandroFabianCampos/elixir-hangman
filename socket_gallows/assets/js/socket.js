@@ -8,7 +8,7 @@
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
 
-let socket = new Socket("/socket", {params: {token: window.userToken}})
+// const socket = new Socket("/socket", {params: {token: window.userToken}})
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -52,13 +52,40 @@ let socket = new Socket("/socket", {params: {token: window.userToken}})
 //     end
 //
 // Finally, connect to the socket:
-socket.connect()
+// socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
-let channel = socket.channel("hangman:game", {})
+// const channel = socket.channel("hangman:game", {})
 
-channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
+// channel.join()
+//   .receive("ok", resp => { console.log("Joined successfully", resp) })
+//   .receive("error", resp => { console.log("Unable to join", resp) })
 
-export default socket
+export default class HangmanSocket {
+
+  constructor() {
+    this.socket = new Socket("/socket", {})
+    this.socket.connect()
+  }
+
+  connect_to_hangman() {
+    this.channel = this.socket.channel("hangman:game", {});
+    this.channel
+      .join()
+      .receive("ok", resp => {
+        console.log("connected: " + resp);
+        this.fetch_tally()
+      })
+      .receive("error", resp => {
+        alert("failed to connect to socket");
+      })
+      
+    this.channel.on("tally", tally => console.log({tally}))
+  }
+
+  fetch_tally() {
+    this.channel.push("tally", {})
+  }
+}
+
+// export default socket
