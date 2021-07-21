@@ -1,17 +1,25 @@
-<%= inspect @tally %>
+<%= game_state(@tally.game_state) %>
 
-<p>
-    Turns left: <%= @tally.turns_left %>
-</p>
 
-<p>
-    Word so far: <%= guess_renderer(@tally.letters) %>
-</p>
 
-<p>
-    Game state: <%= @tally.game_state %>
-</p>
+<%= if game_over?(@tally) do%>
+    <%= "Word was: #{@tally.full_word}" %><br>
+    <%= new_game_button(@conn) %>
+<% else %>
+    <p>
+        Turns left: <%= @tally.turns_left %>
+    </p>
 
-<form>
+    <p>
+        Word so far: <%= guess_renderer(@tally.letters) %>
+    </p>
 
-</form>
+    <p>
+        Game state: <%= @tally.game_state %>
+    </p>
+
+    <%= form_for(@conn, Routes.hangman_path(@conn, :make_move), [ as: :make_move, method: :put], fn f ->  %>
+        <%= text_input(f, :guess) %>
+        <%= submit("Make next move") %>
+    <% end) %>
+<% end %>
