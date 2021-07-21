@@ -1,0 +1,17 @@
+<%= inspect @tally %>
+
+<p>
+    Turns left: <%= @tally.turns_left %>
+</p>
+
+<p>
+    Word so far: <%= guess_renderer(@tally.letters) %>
+</p>
+
+<p>
+    Game state: <%= @tally.game_state %>
+</p>
+
+<form>
+
+</form>
